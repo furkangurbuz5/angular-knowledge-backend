@@ -1,9 +1,6 @@
 package nl.furka.angularknowledge.repository;
 
-import nl.furka.angularknowledge.dto.CreatePersonRequest;
-import nl.furka.angularknowledge.dto.IngredientPropertiesResponse;
-import nl.furka.angularknowledge.dto.PersonIngredientsResponse;
-import nl.furka.angularknowledge.dto.UpdatePersonRequest;
+import nl.furka.angularknowledge.dto.*;
 import nl.furka.angularknowledge.model.Person;
 import nl.furka.angularknowledge.model.filter.PersonFilter;
 import org.springframework.jdbc.core.RowMapper;
@@ -143,6 +140,20 @@ public class PersonRepository {
                 .param("id", id)
                 .query(personIngredientsRowMapper())
                 .list();
+    }
+
+    public PersonIngredientsResponse addIngredientToPerson(AddIngredientToPersonRequest request) {
+        String sql = """
+                INSERT INTO person_ingredients (person_id, ingredient_id)
+                VALUES(?,?)
+                RETURNING *
+                """;
+
+        return jdbcClient.sql(sql)
+                .param(request.personId())
+                .param(request.ingredientId())
+                .query(personIngredientsRowMapper())
+                .single();
     }
 
     private RowMapper<Person> personRowMapper() {

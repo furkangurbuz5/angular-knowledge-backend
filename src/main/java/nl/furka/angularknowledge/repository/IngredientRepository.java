@@ -1,9 +1,6 @@
 package nl.furka.angularknowledge.repository;
 
-import nl.furka.angularknowledge.dto.CreateIngredientRequest;
-import nl.furka.angularknowledge.dto.IngredientPropertiesResponse;
-import nl.furka.angularknowledge.dto.PersonIngredientsResponse;
-import nl.furka.angularknowledge.dto.PropertyResponse;
+import nl.furka.angularknowledge.dto.*;
 import nl.furka.angularknowledge.model.Ingredient;
 import nl.furka.angularknowledge.model.filter.IngredientFilter;
 import org.springframework.jdbc.core.RowMapper;
@@ -104,6 +101,19 @@ public class IngredientRepository {
                 .list();
     }
 
+    public List<Ingredient> getIngredientsByPersonId(Integer personId) {
+        String sql = """
+                SELECT i.* FROM ingredients i
+                JOIN person_ingredients pi ON i.id = pi.ingredient_id
+                WHERE pi.person_id = :personId
+                """;
+
+        return jdbcClient.sql(sql)
+                .param("personId", personId)
+                .query(ingredientRowMapper())
+                .list();
+    }
+
     public Ingredient deleteIngredientById(Integer id) {
         String sql = """
                 DELETE
@@ -114,6 +124,21 @@ public class IngredientRepository {
         return jdbcClient.sql(sql)
                 .param("id", id)
                 .query(ingredientRowMapper())
+                .single();
+    }
+
+    public IngredientPropertiesResponse addPropertyToIngredient(AddPropertyToIngredientRequest request) {
+        String sql = """
+                INSERT INTO ingredient_properties (ingredient_id, property_id, value)
+                VALUES(?,?,?)
+                RETURNING *
+                """;
+
+        return jdbcClient.sql(sql)
+                .param(request.ingredientId())
+                .param(request.propertyId())
+                .param(request.value())
+                .query(ingredientPropertiesResponseRowMapper())
                 .single();
     }
 

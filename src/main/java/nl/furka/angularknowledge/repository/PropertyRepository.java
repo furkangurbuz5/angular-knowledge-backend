@@ -49,16 +49,15 @@ public class PropertyRepository {
                 .list();
     }
 
-    public List<PropertyResponse> getPropertiesByIngredientIds(List<Integer> ingredientIds) {
-
-
+    public List<PropertyResponse> getPropertiesByIngredientId(Integer ingredientId) {
         String sql = """
-                SELECT *
-                FROM properties
-                WHERE id = :id
+                SELECT p.* FROM properties p
+                JOIN ingredient_properties ip ON p.id = ip.property_id
+                WHERE ip.ingredient_id = :ingredientId
                 """;
 
         return jdbcClient.sql(sql)
+                .param("ingredientId", ingredientId)
                 .query(propertyRowMapper())
                 .list();
     }

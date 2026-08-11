@@ -1,5 +1,6 @@
 package nl.furka.angularknowledge.service;
 
+import nl.furka.angularknowledge.dto.AddIngredientToPersonRequest;
 import nl.furka.angularknowledge.dto.CreatePersonRequest;
 import nl.furka.angularknowledge.dto.PersonIngredientsResponse;
 import nl.furka.angularknowledge.model.*;
@@ -8,6 +9,7 @@ import nl.furka.angularknowledge.repository.PersonRepository;
 import nl.furka.angularknowledge.dto.UpdatePersonRequest;
 import nl.furka.angularknowledge.model.filter.PersonFilter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,17 +45,33 @@ public class PersonService {
         return personRepository.updatePerson(id, person);
     }
 
-    public PersonWithIngredients getPersonWithIngredients(Integer personId) {
-        var person = personRepository.getPersonById(personId);
-
-        return new PersonWithIngredients(
-                person,
-                null
-        );
-    }
-
     public List<PersonIngredientsResponse> getPersonIngredients(Integer personId) {
         return personRepository.getPersonIngredientsById(personId);
+    }
+
+    public PersonIngredientsResponse addIngredientToPerson(AddIngredientToPersonRequest request) {
+        return personRepository.addIngredientToPerson(request);
+    }
+
+    @Transactional
+    public PersonWithIngredients getPersonWithIngredients(Integer personId) {
+        Person person = personRepository.getPersonById(personId);
+        List<Ingredient> personIngredients = ingredientService.getIngredientsByPersonId(personId);
+
+        List<IngredientWithProperties> ingredientWithProperties = personIngredients
+                .stream()
+                .map(ingredient -> {
+                    var propertiesByIngredient =
+                            propertyService.getPropertiesByIngredientId(ingredient.id());
+                    return new IngredientWithProperties(
+                            ingredient,
+                            propertiesByIngredient
+                    );
+                }).toList();
+        return new PersonWithIngredients(
+                person,
+                ingredientWithProperties
+        );
     }
 }
 

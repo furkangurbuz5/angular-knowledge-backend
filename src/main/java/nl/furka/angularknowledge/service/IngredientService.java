@@ -1,5 +1,7 @@
 package nl.furka.angularknowledge.service;
 
+import nl.furka.angularknowledge.dto.AddIngredientToPersonRequest;
+import nl.furka.angularknowledge.dto.AddPropertyToIngredientRequest;
 import nl.furka.angularknowledge.dto.CreateIngredientRequest;
 import nl.furka.angularknowledge.dto.IngredientPropertiesResponse;
 import nl.furka.angularknowledge.model.Ingredient;
@@ -42,21 +44,12 @@ public class IngredientService {
         return ingredientRepository.getIngredients();
     }
 
-    @Transactional
-    public IngredientWithProperties getIngredientWithProperties(Integer ingredientId) {
-        var ingredient = getIngredientById(ingredientId);
-        var ingredientProperties = ingredientRepository.getIngredientProperties();
-        var ingredientPropertyIds = ingredientProperties
-                .stream()
-                .map(IngredientPropertiesResponse::propertyId)
-                .toList();
-        var properties = propertyService.getAllProperties()
-                .stream()
-                .filter((property) -> ingredientPropertyIds.contains(property.id())).toList();
 
-        return new IngredientWithProperties(
-                ingredient,
-                properties
-        );
+    public List<Ingredient> getIngredientsByPersonId(Integer personId) {
+        return ingredientRepository.getIngredientsByPersonId(personId);
+    }
+
+    public IngredientPropertiesResponse addPropertyToIngredient(AddPropertyToIngredientRequest request) {
+        return ingredientRepository.addPropertyToIngredient(request);
     }
 }

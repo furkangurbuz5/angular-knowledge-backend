@@ -49,6 +49,16 @@ public class PropertyService {
         );
     }
 
+    public List<Property> getPropertiesByIngredientId(Integer ingredientId) {
+        return propertyRepository.getPropertiesByIngredientId(ingredientId)
+                .stream()
+                .map((propertyResponse) -> new Property(
+                        propertyResponse.id(),
+                        propertyResponse.name(),
+                        Unit.fromId(propertyResponse.unitId())
+                )).toList();
+    }
+
     public Property addProperty(CreatePropertyRequest property) {
         var propertyResponse = propertyRepository.addProperty(property);
 

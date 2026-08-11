@@ -1,10 +1,12 @@
 package nl.furka.angularknowledge.controller;
 
+import nl.furka.angularknowledge.dto.AddIngredientToPersonRequest;
 import nl.furka.angularknowledge.dto.CreatePersonRequest;
 import nl.furka.angularknowledge.dto.PersonIngredientsResponse;
 import nl.furka.angularknowledge.dto.UpdatePersonRequest;
 import nl.furka.angularknowledge.model.Ingredient;
 import nl.furka.angularknowledge.model.Person;
+import nl.furka.angularknowledge.model.PersonWithIngredients;
 import nl.furka.angularknowledge.model.filter.PersonFilter;
 import nl.furka.angularknowledge.service.PersonService;
 import org.slf4j.Logger;
@@ -76,6 +78,20 @@ public class PersonController {
     ) {
         return ResponseEntity.ok(
                 personService.getPersonIngredients(id)
+        );
+    }
+
+    @PostMapping("persons/ingredients")
+    public ResponseEntity<PersonIngredientsResponse> addIngredientToPerson(@RequestBody AddIngredientToPersonRequest request) {
+        return ResponseEntity.ok(personService.addIngredientToPerson(request));
+    }
+
+    @GetMapping("persons/{id}/ingredients")
+    public ResponseEntity<PersonWithIngredients> getPersonWithIngredients(
+            @PathVariable Integer id
+    ) {
+        return ResponseEntity.ok(
+                personService.getPersonWithIngredients(id)
         );
     }
 
