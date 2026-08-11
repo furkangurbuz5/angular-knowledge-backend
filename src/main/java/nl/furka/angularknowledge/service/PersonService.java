@@ -4,7 +4,6 @@ import nl.furka.angularknowledge.dto.AddIngredientToPersonRequest;
 import nl.furka.angularknowledge.dto.CreatePersonRequest;
 import nl.furka.angularknowledge.dto.PersonIngredientsResponse;
 import nl.furka.angularknowledge.model.*;
-import nl.furka.angularknowledge.model.filter.IngredientFilter;
 import nl.furka.angularknowledge.repository.PersonRepository;
 import nl.furka.angularknowledge.dto.UpdatePersonRequest;
 import nl.furka.angularknowledge.model.filter.PersonFilter;
@@ -61,11 +60,10 @@ public class PersonService {
         List<IngredientWithProperties> ingredientWithProperties = personIngredients
                 .stream()
                 .map(ingredient -> {
-                    var propertiesByIngredient =
-                            propertyService.getPropertiesByIngredientId(ingredient.id());
+                    var propertiesWithValues = propertyService.getPropertiesWithValueByIngredientId(ingredient.id());
                     return new IngredientWithProperties(
                             ingredient,
-                            propertiesByIngredient
+                            propertiesWithValues
                     );
                 }).toList();
         return new PersonWithIngredients(

@@ -5,6 +5,6 @@ import java.util.List;
 
 public record IngredientWithProperties(
         Ingredient ingredient,
-        List<Property> properties
+        List<PropertyWithValue> properties
 ) {
 }

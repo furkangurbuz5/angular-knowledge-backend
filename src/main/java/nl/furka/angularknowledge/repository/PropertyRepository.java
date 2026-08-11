@@ -2,7 +2,7 @@ package nl.furka.angularknowledge.repository;
 
 import nl.furka.angularknowledge.dto.CreatePropertyRequest;
 import nl.furka.angularknowledge.dto.PropertyResponse;
-import nl.furka.angularknowledge.model.Ingredient;
+import nl.furka.angularknowledge.dto.PropertyWithValueResponse;
 import nl.furka.angularknowledge.model.filter.PropertyFilter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -62,6 +62,26 @@ public class PropertyRepository {
                 .list();
     }
 
+    public List<PropertyWithValueResponse> getPropertiesWithValueByIngredientId(Integer ingredientId) {
+        String sql = """
+                SELECT
+                    p.name AS name,
+                    unit_id,
+                    ip.value
+                FROM
+                    properties p
+                JOIN
+                    ingredient_properties ip ON p.id = ip.property_id
+                WHERE
+                    ip.ingredient_id = :ingredientId;
+                """;
+
+        return jdbcClient.sql(sql)
+                .param("ingredientId", ingredientId)
+                .query(propertyWithValueResponseRowMapper())
+                .list();
+    }
+
     public PropertyResponse getPropertyById(Integer id) {
         String sql = """
                 SELECT *
@@ -105,6 +125,14 @@ public class PropertyRepository {
                 r.getInt("id"),
                 r.getString("name"),
                 r.getInt("unit_id")
+        );
+    }
+
+    private RowMapper<PropertyWithValueResponse> propertyWithValueResponseRowMapper() {
+        return (r, _) -> new PropertyWithValueResponse(
+                r.getString("name"),
+                r.getInt("unit_id"),
+                r.getInt("value")
         );
     }
 }

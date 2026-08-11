@@ -1,8 +1,8 @@
 package nl.furka.angularknowledge.service;
 
 import nl.furka.angularknowledge.dto.CreatePropertyRequest;
-import nl.furka.angularknowledge.model.Ingredient;
 import nl.furka.angularknowledge.model.Property;
+import nl.furka.angularknowledge.model.PropertyWithValue;
 import nl.furka.angularknowledge.model.Unit;
 import nl.furka.angularknowledge.model.filter.PropertyFilter;
 import nl.furka.angularknowledge.repository.PropertyRepository;
@@ -47,6 +47,16 @@ public class PropertyService {
                 propertyResponse.name(),
                 Unit.fromId(propertyResponse.unitId())
         );
+    }
+
+    public List<PropertyWithValue> getPropertiesWithValueByIngredientId(Integer ingredientId) {
+        return propertyRepository.getPropertiesWithValueByIngredientId(ingredientId)
+                .stream()
+                .map(response -> new PropertyWithValue(
+                        response.name(),
+                        Unit.fromId(response.unitId()),
+                        response.value()
+                )).toList();
     }
 
     public List<Property> getPropertiesByIngredientId(Integer ingredientId) {
