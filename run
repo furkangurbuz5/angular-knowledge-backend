@@ -1,0 +1,20 @@
+#!/bin/bash
+# Script to run a Spring Boot application via Maven
+# Usage: ./run
+
+set -euo pipefail  # Fail on errors, unset variables, and pipeline failures
+
+# Check if Maven is installed
+if ! command -v mvn &> /dev/null; then
+    echo "ERROR: Maven (mvn) is not installed or not in PATH."
+    exit 1
+fi
+
+echo "Starting Spring Boot application..."
+mvn spring-boot:run
+
+# If Maven succeeds, print confirmation (this line is unreachable in foreground mode)
+# For background mode, you'd use: mvn spring-boot:run > /dev/null 2>&1 &
+echo "Spring Boot application ran successfully on http://localhost:8080"
+
+
