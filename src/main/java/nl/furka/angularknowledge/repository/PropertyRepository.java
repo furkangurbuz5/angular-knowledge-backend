@@ -65,6 +65,7 @@ public class PropertyRepository {
     public List<PropertyWithValueResponse> getPropertiesWithValueByIngredientId(Integer ingredientId) {
         String sql = """
                 SELECT
+                    p.id,
                     p.name AS name,
                     unit_id,
                     ip.value
@@ -130,6 +131,7 @@ public class PropertyRepository {
 
     private RowMapper<PropertyWithValueResponse> propertyWithValueResponseRowMapper() {
         return (r, _) -> new PropertyWithValueResponse(
+                r.getInt("id"),
                 r.getString("name"),
                 r.getInt("unit_id"),
                 r.getInt("value")

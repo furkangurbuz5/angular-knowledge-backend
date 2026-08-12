@@ -53,6 +53,7 @@ public class PropertyService {
         return propertyRepository.getPropertiesWithValueByIngredientId(ingredientId)
                 .stream()
                 .map(response -> new PropertyWithValue(
+                        response.id(),
                         response.name(),
                         Unit.fromId(response.unitId()),
                         response.value()
