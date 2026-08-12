@@ -2,6 +2,7 @@ package nl.furka.angularknowledge.controller;
 
 import nl.furka.angularknowledge.dto.CreatePropertyRequest;
 import nl.furka.angularknowledge.model.Property;
+import nl.furka.angularknowledge.model.PropertyWithValue;
 import nl.furka.angularknowledge.model.filter.PropertyFilter;
 import nl.furka.angularknowledge.service.PropertyService;
 import org.slf4j.Logger;
@@ -43,6 +44,13 @@ public class PropertyController {
             @PathVariable Integer id
     ) {
         return ResponseEntity.ok(propertyService.getPropertyById(id));
+    }
+
+    @GetMapping("properties/ingredients/{id}")
+    public ResponseEntity<List<PropertyWithValue>> getPropertiesWithValueByIngredientId(
+            @PathVariable Integer id
+    ) {
+        return ResponseEntity.ok(propertyService.getPropertiesWithValueByIngredientId(id));
     }
 
     @DeleteMapping("properties/{id}")

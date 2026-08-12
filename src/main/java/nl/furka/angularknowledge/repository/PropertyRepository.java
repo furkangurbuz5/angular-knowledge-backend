@@ -33,7 +33,7 @@ public class PropertyRepository {
 
         return jdbcClient.sql(sql + buildWhereClause(filter, params))
                 .params(params)
-                .query(propertyRowMapper())
+                .query(propertyResponseRowMapper())
                 .list();
     }
 
@@ -45,7 +45,7 @@ public class PropertyRepository {
                 """;
 
         return jdbcClient.sql(sql)
-                .query(propertyRowMapper())
+                .query(propertyResponseRowMapper())
                 .list();
     }
 
@@ -58,7 +58,7 @@ public class PropertyRepository {
 
         return jdbcClient.sql(sql)
                 .param("ingredientId", ingredientId)
-                .query(propertyRowMapper())
+                .query(propertyResponseRowMapper())
                 .list();
     }
 
@@ -90,7 +90,7 @@ public class PropertyRepository {
                 """;
         return jdbcClient.sql(sql)
                 .param("id", id)
-                .query(propertyRowMapper())
+                .query(propertyResponseRowMapper())
                 .single();
     }
 
@@ -103,7 +103,7 @@ public class PropertyRepository {
         return jdbcClient.sql(sql)
                 .param(property.name())
                 .param(property.unitId())
-                .query(propertyRowMapper())
+                .query(propertyResponseRowMapper())
                 .single();
     }
 
@@ -116,11 +116,11 @@ public class PropertyRepository {
                 """;
         return jdbcClient.sql(sql)
                 .param("id", id)
-                .query(propertyRowMapper())
+                .query(propertyResponseRowMapper())
                 .single();
     }
 
-    private RowMapper<PropertyResponse> propertyRowMapper() {
+    private RowMapper<PropertyResponse> propertyResponseRowMapper() {
         return (r, _) -> new PropertyResponse(
                 r.getInt("id"),
                 r.getString("name"),
