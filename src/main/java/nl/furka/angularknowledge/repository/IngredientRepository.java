@@ -1,7 +1,6 @@
 package nl.furka.angularknowledge.repository;
 
 import nl.furka.angularknowledge.dto.*;
-import nl.furka.angularknowledge.model.Ingredient;
 import nl.furka.angularknowledge.model.filter.IngredientFilter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -21,7 +20,7 @@ public class IngredientRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    public Ingredient addIngredient(CreateIngredientRequest ingredient) {
+    public IngredientResponse addIngredient(CreateIngredientRequest ingredient) {
         String sql = """
                 INSERT INTO ingredients (name, serving_size, unit_id)
                 VALUES(?,?,?)
@@ -32,11 +31,11 @@ public class IngredientRepository {
                 .param(ingredient.name())
                 .param(ingredient.servingSize())
                 .param(ingredient.unitId())
-                .query(ingredientRowMapper())
+                .query(ingredientResponseRowMapper())
                 .single();
     }
 
-    public List<Ingredient> getIngredients(IngredientFilter filter) {
+    public List<IngredientResponse> getIngredients(IngredientFilter filter) {
         String sql = """
                 SELECT *
                 FROM ingredients
@@ -46,12 +45,12 @@ public class IngredientRepository {
 
         return jdbcClient.sql(sql + buildWhereClause(filter, params))
                 .params(params)
-                .query(ingredientRowMapper())
+                .query(ingredientResponseRowMapper())
                 .list();
 
     }
 
-    public List<Ingredient> getIngredients() {
+    public List<IngredientResponse> getIngredients() {
         String sql = """
                 SELECT *
                 FROM ingredients
@@ -59,11 +58,11 @@ public class IngredientRepository {
                 """;
 
         return jdbcClient.sql(sql)
-                .query(ingredientRowMapper())
+                .query(ingredientResponseRowMapper())
                 .list();
     }
 
-    public Ingredient getIngredientById(Integer ingredientId) {
+    public IngredientResponse getIngredientById(Integer ingredientId) {
         String sql = """
                 SELECT *
                 FROM ingredients
@@ -72,7 +71,7 @@ public class IngredientRepository {
 
         return jdbcClient.sql(sql)
                 .param("id", ingredientId)
-                .query(ingredientRowMapper())
+                .query(ingredientResponseRowMapper())
                 .single();
     }
 
@@ -101,7 +100,7 @@ public class IngredientRepository {
                 .list();
     }
 
-    public List<Ingredient> getIngredientsByPersonId(Integer personId) {
+    public List<IngredientResponse> getIngredientsByPersonId(Integer personId) {
         String sql = """
                 SELECT i.* FROM ingredients i
                 JOIN person_ingredients pi ON i.id = pi.ingredient_id
@@ -110,11 +109,11 @@ public class IngredientRepository {
 
         return jdbcClient.sql(sql)
                 .param("personId", personId)
-                .query(ingredientRowMapper())
+                .query(ingredientResponseRowMapper())
                 .list();
     }
 
-    public Ingredient deleteIngredientById(Integer id) {
+    public IngredientResponse deleteIngredientById(Integer id) {
         String sql = """
                 DELETE
                 FROM ingredients
@@ -123,7 +122,7 @@ public class IngredientRepository {
                 """;
         return jdbcClient.sql(sql)
                 .param("id", id)
-                .query(ingredientRowMapper())
+                .query(ingredientResponseRowMapper())
                 .single();
     }
 
@@ -142,8 +141,8 @@ public class IngredientRepository {
                 .single();
     }
 
-    private RowMapper<Ingredient> ingredientRowMapper() {
-        return (rs, _) -> new Ingredient(
+    private RowMapper<IngredientResponse> ingredientResponseRowMapper() {
+        return (rs, _) -> new IngredientResponse(
                 rs.getInt("id"),
                 rs.getString("name"),
                 rs.getInt("serving_size"),

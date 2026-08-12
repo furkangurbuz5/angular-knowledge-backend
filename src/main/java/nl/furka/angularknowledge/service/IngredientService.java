@@ -1,52 +1,85 @@
 package nl.furka.angularknowledge.service;
 
-import nl.furka.angularknowledge.dto.AddIngredientToPersonRequest;
-import nl.furka.angularknowledge.dto.AddPropertyToIngredientRequest;
-import nl.furka.angularknowledge.dto.CreateIngredientRequest;
-import nl.furka.angularknowledge.dto.IngredientPropertiesResponse;
-import nl.furka.angularknowledge.model.Ingredient;
-import nl.furka.angularknowledge.model.IngredientWithProperties;
-import nl.furka.angularknowledge.model.Property;
+import nl.furka.angularknowledge.dto.*;
+import nl.furka.angularknowledge.model.*;
 import nl.furka.angularknowledge.model.filter.IngredientFilter;
 import nl.furka.angularknowledge.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class IngredientService {
     private final IngredientRepository ingredientRepository;
-    private final PropertyService propertyService;
 
-    IngredientService(IngredientRepository ingredientRepository, PropertyService propertyService) {
+    IngredientService(IngredientRepository ingredientRepository) {
         this.ingredientRepository = ingredientRepository;
-        this.propertyService = propertyService;
     }
 
-    public Ingredient addIngredient(CreateIngredientRequest ingredient) {
-        return ingredientRepository.addIngredient(ingredient);
+    public IngredientWithUnit addIngredient(CreateIngredientRequest ingredient) {
+        var ingredientResponse = ingredientRepository.addIngredient(ingredient);
+
+        return new IngredientWithUnit(
+                ingredientResponse.id(),
+                ingredientResponse.name(),
+                ingredientResponse.servingSize(),
+                Unit.fromId(ingredientResponse.unitId())
+        );
     }
 
-    public List<Ingredient> getIngredients(IngredientFilter filter) {
-        return ingredientRepository.getIngredients(filter);
+    public List<IngredientWithUnit> getIngredients(IngredientFilter filter) {
+        return ingredientRepository.getIngredients(filter)
+                .stream()
+                .map((ingredientResponse) -> new IngredientWithUnit(
+                        ingredientResponse.id(),
+                        ingredientResponse.name(),
+                        ingredientResponse.servingSize(),
+                        Unit.fromId(ingredientResponse.unitId())
+                )).toList();
     }
 
-    public Ingredient getIngredientById(Integer ingredientId) {
-        return ingredientRepository.getIngredientById(ingredientId);
+    public List<IngredientWithUnit> getIngredients() {
+        return ingredientRepository.getIngredients()
+                .stream()
+                .map((ingredientResponse) -> new IngredientWithUnit(
+                        ingredientResponse.id(),
+                        ingredientResponse.name(),
+                        ingredientResponse.servingSize(),
+                        Unit.fromId(ingredientResponse.unitId())
+                )).toList();
     }
 
-    public Ingredient deleteIngredientById(Integer ingredientId) {
-        return ingredientRepository.deleteIngredientById(ingredientId);
+    public IngredientWithUnit getIngredientById(Integer ingredientId) {
+        var ingredientResponse = ingredientRepository.getIngredientById(ingredientId);
+
+        return new IngredientWithUnit(
+                ingredientResponse.id(),
+                ingredientResponse.name(),
+                ingredientResponse.servingSize(),
+                Unit.fromId(ingredientResponse.unitId())
+        );
     }
 
-    public List<Ingredient> getIngredients() {
-        return ingredientRepository.getIngredients();
+    public IngredientWithUnit deleteIngredientById(Integer ingredientId) {
+        var ingredientResponse = ingredientRepository.deleteIngredientById(ingredientId);
+
+        return new IngredientWithUnit(
+                ingredientResponse.id(),
+                ingredientResponse.name(),
+                ingredientResponse.servingSize(),
+                Unit.fromId(ingredientResponse.unitId())
+        );
     }
 
-
-    public List<Ingredient> getIngredientsByPersonId(Integer personId) {
-        return ingredientRepository.getIngredientsByPersonId(personId);
+    public List<IngredientWithUnit> getIngredientsByPersonId(Integer personId) {
+        return ingredientRepository.getIngredientsByPersonId(personId)
+                .stream()
+                .map((ingredientResponse) -> new IngredientWithUnit(
+                        ingredientResponse.id(),
+                        ingredientResponse.name(),
+                        ingredientResponse.servingSize(),
+                        Unit.fromId(ingredientResponse.unitId())
+                )).toList();
     }
 
     public IngredientPropertiesResponse addPropertyToIngredient(AddPropertyToIngredientRequest request) {

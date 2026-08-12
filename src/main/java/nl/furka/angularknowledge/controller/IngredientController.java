@@ -1,11 +1,9 @@
 package nl.furka.angularknowledge.controller;
 
-import nl.furka.angularknowledge.dto.AddIngredientToPersonRequest;
 import nl.furka.angularknowledge.dto.AddPropertyToIngredientRequest;
 import nl.furka.angularknowledge.dto.CreateIngredientRequest;
 import nl.furka.angularknowledge.dto.IngredientPropertiesResponse;
-import nl.furka.angularknowledge.model.Ingredient;
-import nl.furka.angularknowledge.model.IngredientWithProperties;
+import nl.furka.angularknowledge.model.IngredientWithUnit;
 import nl.furka.angularknowledge.model.filter.IngredientFilter;
 import nl.furka.angularknowledge.service.IngredientService;
 import org.slf4j.Logger;
@@ -26,12 +24,12 @@ public class IngredientController {
     }
 
     @PostMapping("ingredients")
-    public ResponseEntity<Ingredient> addIngredient(@RequestBody CreateIngredientRequest ingredient) {
+    public ResponseEntity<IngredientWithUnit> addIngredient(@RequestBody CreateIngredientRequest ingredient) {
         return ResponseEntity.ok(ingredientService.addIngredient(ingredient));
     }
 
     @GetMapping("ingredients")
-    public ResponseEntity<List<Ingredient>> getIngredients(
+    public ResponseEntity<List<IngredientWithUnit>> getIngredients(
             @RequestParam(required = false) Integer id,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Integer servingSize,
@@ -43,17 +41,17 @@ public class IngredientController {
     }
 
     @GetMapping("ingredients/{id}")
-    public ResponseEntity<Ingredient> getIngredientById(@PathVariable Integer id) {
+    public ResponseEntity<IngredientWithUnit> getIngredientById(@PathVariable Integer id) {
         return ResponseEntity.ok(ingredientService.getIngredientById(id));
     }
 
     @GetMapping("ingredients/person/{id}")
-    public ResponseEntity<List<Ingredient>> getIngredientsByPersonId(@PathVariable Integer id) {
+    public ResponseEntity<List<IngredientWithUnit>> getIngredientsByPersonId(@PathVariable Integer id) {
         return ResponseEntity.ok(ingredientService.getIngredientsByPersonId(id));
     }
 
     @DeleteMapping("ingredients/{id}")
-    public ResponseEntity<Ingredient> deleteIngredientById(@PathVariable Integer id) {
+    public ResponseEntity<IngredientWithUnit> deleteIngredientById(@PathVariable Integer id) {
         return ResponseEntity.ok(ingredientService.deleteIngredientById(id));
     }
 

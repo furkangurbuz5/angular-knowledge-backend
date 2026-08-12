@@ -55,7 +55,7 @@ public class PersonService {
     @Transactional
     public PersonWithIngredients getPersonWithIngredients(Integer personId) {
         Person person = personRepository.getPersonById(personId);
-        List<Ingredient> personIngredients = ingredientService.getIngredientsByPersonId(personId);
+        List<IngredientWithUnit> personIngredients = ingredientService.getIngredientsByPersonId(personId);
 
         List<IngredientWithProperties> ingredientWithProperties = personIngredients
                 .stream()
