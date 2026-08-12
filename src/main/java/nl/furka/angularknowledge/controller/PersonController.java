@@ -20,7 +20,6 @@ import java.util.List;
 @RequestMapping("api/v1")
 public class PersonController {
     private final PersonService personService;
-    private final Logger logger = LoggerFactory.getLogger(PersonController.class);
 
     PersonController(PersonService personService) {
         this.personService = personService;
@@ -38,7 +37,6 @@ public class PersonController {
             @RequestParam(required = false) String bank
     ) {
         PersonFilter filter = new PersonFilter(id, firstName, lastName, email, car, city, countryOfOrigin, bank);
-        logger.info(filter.toString());
 
         return ResponseEntity.ok(personService.getAllPersons(filter));
     }

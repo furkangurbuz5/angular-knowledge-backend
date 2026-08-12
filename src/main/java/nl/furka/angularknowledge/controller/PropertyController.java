@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("api/v1")
 public class PropertyController {
     private final PropertyService propertyService;
-    private final Logger logger = LoggerFactory.getLogger(PropertyController.class);
 
     PropertyController(PropertyService propertyService) {
         this.propertyService = propertyService;
@@ -24,7 +23,6 @@ public class PropertyController {
 
     @PostMapping("properties")
     public ResponseEntity<Property> addProperty(@RequestBody CreatePropertyRequest property) {
-        logger.info("adding property {}", property);
         return ResponseEntity.ok(propertyService.addProperty(property));
     }
 
@@ -35,7 +33,6 @@ public class PropertyController {
             @RequestParam(required = false) Integer unitId
     ) {
         PropertyFilter filter = new PropertyFilter(id, name, unitId);
-        logger.info(filter.toString());
         return ResponseEntity.ok(propertyService.getAllProperties(filter));
     }
 

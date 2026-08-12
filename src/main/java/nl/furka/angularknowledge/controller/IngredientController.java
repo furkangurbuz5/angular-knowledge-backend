@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("api/v1")
 public class IngredientController {
     private final IngredientService ingredientService;
-    private final Logger logger = LoggerFactory.getLogger(IngredientController.class);
 
     IngredientController(IngredientService ingredientService) {
         this.ingredientService = ingredientService;
@@ -36,7 +35,6 @@ public class IngredientController {
             @RequestParam(required = false) Integer unitId
     ) {
         IngredientFilter filter = new IngredientFilter(id, name, servingSize, unitId);
-        logger.info(filter.toString());
         return ResponseEntity.ok(ingredientService.getIngredients(filter));
     }
 
