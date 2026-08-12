@@ -8,7 +8,8 @@ public enum Unit {
     ML(1),
     G(2),
     AMOUNT(3),
-    KCAL(4);
+    KCAL(4),
+    MG(5);
 
     private final Integer id;
 
