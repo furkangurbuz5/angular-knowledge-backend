@@ -13,7 +13,6 @@ public record Person(
         @Nullable
         String car,
         String city,
-        @JsonProperty("country_of_origin")
         String countryOfOrigin,
         String bank
 ) {
