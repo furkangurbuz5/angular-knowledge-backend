@@ -8,7 +8,6 @@ import nl.furka.angularknowledge.repository.PersonRepository;
 import nl.furka.angularknowledge.dto.UpdatePersonRequest;
 import nl.furka.angularknowledge.model.filter.PersonFilter;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -52,7 +51,6 @@ public class PersonService {
         return personRepository.addIngredientToPerson(request);
     }
 
-    @Transactional
     public PersonWithIngredients getPersonWithIngredients(Integer personId) {
         Person person = personRepository.getPersonById(personId);
         List<IngredientWithUnit> personIngredients = ingredientService.getIngredientsByPersonId(personId);
