@@ -61,5 +61,6 @@ CREATE TABLE IF NOT EXISTS collection_ingredients
     ingredient_id INTEGER NOT NULL,
     quantity      INTEGER NOT NULL,
     FOREIGN KEY (collection_id) REFERENCES collections (id),
-    FOREIGN KEY (ingredient_id) REFERENCES ingredients (id)
+    FOREIGN KEY (ingredient_id) REFERENCES ingredients (id),
+    UNIQUE(collection_id, ingredient_id)
 );
