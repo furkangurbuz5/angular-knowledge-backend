@@ -30,6 +30,12 @@ public class CollectionService {
                 ).toList();
     }
 
+    public Collection getCollectionById(Integer collectionId) {
+        var response = this.collectionRepository.getCollectionById(collectionId);
+
+        return new Collection(response.id(), response.name());
+    }
+
     public Collection addCollection(CreateCollectionRequest request) {
         var response = collectionRepository.addCollection(request);
 
@@ -41,7 +47,7 @@ public class CollectionService {
 
     public Collection addFoodToCollection(Integer id, AddFoodToCollectionRequest request) {
         var collectionIngredientsResponse = collectionRepository.addFoodToCollection(id, request);
-        var collection = collectionRepository.getCollectionById(collectionIngredientsResponse.id());
+        var collection = getCollectionById(collectionIngredientsResponse.collectionId());
 
         return new Collection(
                 collection.id(),
@@ -50,7 +56,7 @@ public class CollectionService {
     }
 
     public CollectionWithFoods getCollectionWithFoods(Integer collectionId) {
-        var collection = collectionRepository.getCollectionById(collectionId);
+        var collection = getCollectionById(collectionId);
         var collectionIngredients = ingredientService.getIngredientsByCollectionId(collectionId);
 
         return new CollectionWithFoods(

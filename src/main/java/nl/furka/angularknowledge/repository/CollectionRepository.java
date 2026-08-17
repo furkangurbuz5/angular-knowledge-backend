@@ -32,7 +32,7 @@ public class CollectionRepository {
     public CollectionResponse getCollectionById(Integer collectionId) {
         String sql = """
                 SELECT * FROM collections
-                WHERE collection_id = :collectionId;
+                WHERE id = :collectionId;
                 """;
 
         return jdbcClient
@@ -56,7 +56,7 @@ public class CollectionRepository {
                 .single();
     }
 
-    public CollectionIngredientsResponse addFoodToCollection(Integer id, AddFoodToCollectionRequest request) {
+    public CollectionIngredientsResponse addFoodToCollection(Integer collectionId, AddFoodToCollectionRequest request) {
         String sql = """
                 INSERT INTO collection_ingredients (collection_id, ingredient_id, quantity)
                 VALUES (?,?,?)
@@ -65,6 +65,7 @@ public class CollectionRepository {
 
         return jdbcClient
                 .sql(sql)
+                .param(collectionId)
                 .param(request.ingredientId())
                 .param(request.quantity())
                 .query(collectionIngredientsResponseRowMapper())

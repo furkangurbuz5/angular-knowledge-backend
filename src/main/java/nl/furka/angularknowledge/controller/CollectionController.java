@@ -24,6 +24,11 @@ public class CollectionController {
         return ResponseEntity.ok(collectionService.getAllCollections());
     }
 
+    @GetMapping("collections/{id}")
+    public ResponseEntity<Collection> getCollectionById(@PathVariable Integer id) {
+        return ResponseEntity.ok(collectionService.getCollectionById(id));
+    }
+
     @PostMapping("collections")
     public ResponseEntity<Collection> addCollection(
             @RequestBody CreateCollectionRequest request
