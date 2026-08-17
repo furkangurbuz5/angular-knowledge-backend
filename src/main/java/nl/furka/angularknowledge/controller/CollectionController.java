@@ -2,6 +2,7 @@ package nl.furka.angularknowledge.controller;
 
 import nl.furka.angularknowledge.dto.AddFoodToCollectionRequest;
 import nl.furka.angularknowledge.dto.CreateCollectionRequest;
+import nl.furka.angularknowledge.dto.DeleteFoodFromCollectionRequest;
 import nl.furka.angularknowledge.model.Collection;
 import nl.furka.angularknowledge.model.CollectionWithFoods;
 import nl.furka.angularknowledge.service.CollectionService;
@@ -49,5 +50,13 @@ public class CollectionController {
             @RequestBody AddFoodToCollectionRequest request
     ) {
         return ResponseEntity.ok(collectionService.addFoodToCollection(id, request));
+    }
+
+    @DeleteMapping("collections/{id}/foods")
+    public ResponseEntity<CollectionWithFoods> deleteFoodFromCollection(
+            @PathVariable Integer id,
+            @RequestBody DeleteFoodFromCollectionRequest request
+    ) {
+        return ResponseEntity.ok(collectionService.deleteFoodFromCollection(id, request));
     }
 }

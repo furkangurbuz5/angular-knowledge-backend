@@ -1,9 +1,6 @@
 package nl.furka.angularknowledge.repository;
 
-import nl.furka.angularknowledge.dto.AddFoodToCollectionRequest;
-import nl.furka.angularknowledge.dto.CollectionIngredientsResponse;
-import nl.furka.angularknowledge.dto.CollectionResponse;
-import nl.furka.angularknowledge.dto.CreateCollectionRequest;
+import nl.furka.angularknowledge.dto.*;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
@@ -68,6 +65,22 @@ public class CollectionRepository {
                 .param(collectionId)
                 .param(request.ingredientId())
                 .param(request.quantity())
+                .query(collectionIngredientsResponseRowMapper())
+                .single();
+    }
+
+    public CollectionIngredientsResponse deleteFoodFromCollection(Integer collectionId, DeleteFoodFromCollectionRequest request) {
+        String sql = """
+                DELETE FROM collection_ingredients
+                WHERE collection_id = :collectionId
+                AND ingredient_id = :ingredientId
+                RETURNING *
+                """;
+
+        return jdbcClient
+                .sql(sql)
+                .param("collectionId", collectionId)
+                .param("ingredientId", request.ingredientId())
                 .query(collectionIngredientsResponseRowMapper())
                 .single();
     }
