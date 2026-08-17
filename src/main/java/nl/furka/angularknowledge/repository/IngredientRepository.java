@@ -141,6 +141,19 @@ public class IngredientRepository {
                 .single();
     }
 
+    public List<IngredientResponse> getIngredientsByCollectionId(Integer collectionId) {
+        String sql = """
+                SELECT i.* FROM ingredients i
+                JOIN collection_ingredients ci ON i.id = ci.ingredient_id
+                WHERE ci.collection_id = :collectionId
+                """;
+
+        return jdbcClient.sql(sql)
+                .param("collectionId", collectionId)
+                .query(ingredientResponseRowMapper())
+                .list();
+    }
+
     private RowMapper<IngredientResponse> ingredientResponseRowMapper() {
         return (rs, _) -> new IngredientResponse(
                 rs.getInt("id"),

@@ -3,6 +3,7 @@ package nl.furka.angularknowledge.controller;
 import nl.furka.angularknowledge.dto.AddFoodToCollectionRequest;
 import nl.furka.angularknowledge.dto.CreateCollectionRequest;
 import nl.furka.angularknowledge.model.Collection;
+import nl.furka.angularknowledge.model.CollectionWithFoods;
 import nl.furka.angularknowledge.service.CollectionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,13 @@ public class CollectionController {
             @RequestBody CreateCollectionRequest request
     ) {
         return ResponseEntity.ok(collectionService.addCollection(request));
+    }
+
+    @GetMapping("collections/{id}/foods")
+    public ResponseEntity<CollectionWithFoods> getCollectionWithFoods(
+            @PathVariable Integer id
+    ) {
+        return ResponseEntity.ok(collectionService.getCollectionWithFoods(id));
     }
 
     @PostMapping("collections/{id}/foods")

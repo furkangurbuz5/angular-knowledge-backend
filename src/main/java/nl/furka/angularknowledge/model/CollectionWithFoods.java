@@ -4,6 +4,6 @@ import java.util.List;
 
 public record CollectionWithFoods(
         Collection collection,
-        List<Ingredient> foods
+        List<IngredientWithUnit> foods
 ) {
 }

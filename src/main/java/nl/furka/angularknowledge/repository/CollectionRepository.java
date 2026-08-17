@@ -29,6 +29,19 @@ public class CollectionRepository {
                 .list();
     }
 
+    public CollectionResponse getCollectionById(Integer collectionId) {
+        String sql = """
+                SELECT * FROM collections
+                WHERE collection_id = :collectionId;
+                """;
+
+        return jdbcClient
+                .sql(sql)
+                .param("collectionId", collectionId)
+                .query(collectionResponseRowMapper())
+                .single();
+    }
+
     public CollectionResponse addCollection(CreateCollectionRequest request) {
         String sql = """
                 INSERT INTO collections (name)

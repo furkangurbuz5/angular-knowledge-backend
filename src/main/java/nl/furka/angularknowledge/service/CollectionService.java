@@ -14,9 +14,11 @@ import java.util.List;
 @Transactional
 public class CollectionService {
     private final CollectionRepository collectionRepository;
+    private final IngredientService ingredientService;
 
-    CollectionService(CollectionRepository collectionRepository) {
+    CollectionService(CollectionRepository collectionRepository, IngredientService ingredientService) {
         this.collectionRepository = collectionRepository;
+        this.ingredientService = ingredientService;
     }
 
     public List<Collection> getAllCollections() {
@@ -38,7 +40,25 @@ public class CollectionService {
     }
 
     public Collection addFoodToCollection(Integer id, AddFoodToCollectionRequest request) {
-        var response = collectionRepository.addFoodToCollection(id, request);
-        return null; //TODO
+        var collectionIngredientsResponse = collectionRepository.addFoodToCollection(id, request);
+        var collection = collectionRepository.getCollectionById(collectionIngredientsResponse.id());
+
+        return new Collection(
+                collection.id(),
+                collection.name()
+        );
+    }
+
+    public CollectionWithFoods getCollectionWithFoods(Integer collectionId) {
+        var collection = collectionRepository.getCollectionById(collectionId);
+        var collectionIngredients = ingredientService.getIngredientsByCollectionId(collectionId);
+
+        return new CollectionWithFoods(
+                new Collection(
+                        collection.id(),
+                        collection.name()
+                ),
+                collectionIngredients
+        );
     }
 }
