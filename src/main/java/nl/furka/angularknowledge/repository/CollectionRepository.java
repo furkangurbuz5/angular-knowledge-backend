@@ -1,15 +1,20 @@
 package nl.furka.angularknowledge.repository;
 
 import nl.furka.angularknowledge.dto.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class CollectionRepository {
     private final JdbcClient jdbcClient;
+    private final Logger logger = LoggerFactory.getLogger(CollectionRepository.class);
 
     CollectionRepository(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
@@ -69,7 +74,7 @@ public class CollectionRepository {
                 .single();
     }
 
-    public CollectionIngredientsResponse deleteFoodFromCollection(Integer collectionId, DeleteFoodFromCollectionRequest request) {
+    public Optional<CollectionIngredientsResponse> deleteFoodFromCollection(Integer collectionId, DeleteFoodFromCollectionRequest request) throws EmptyResultDataAccessException {
         String sql = """
                 DELETE FROM collection_ingredients
                 WHERE collection_id = :collectionId
@@ -82,7 +87,7 @@ public class CollectionRepository {
                 .param("collectionId", collectionId)
                 .param("ingredientId", request.ingredientId())
                 .query(collectionIngredientsResponseRowMapper())
-                .single();
+                .optional();
     }
 
     public RowMapper<CollectionResponse> collectionResponseRowMapper() {

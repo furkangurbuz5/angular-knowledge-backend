@@ -4,6 +4,7 @@ import nl.furka.angularknowledge.dto.AddFoodToCollectionRequest;
 import nl.furka.angularknowledge.dto.CreateCollectionRequest;
 import nl.furka.angularknowledge.dto.DeleteFoodFromCollectionRequest;
 import nl.furka.angularknowledge.model.Collection;
+import nl.furka.angularknowledge.model.CollectionIngredients;
 import nl.furka.angularknowledge.model.CollectionWithFoods;
 import nl.furka.angularknowledge.service.CollectionService;
 import org.springframework.http.ResponseEntity;
@@ -53,10 +54,11 @@ public class CollectionController {
     }
 
     @DeleteMapping("collections/{id}/foods")
-    public ResponseEntity<CollectionWithFoods> deleteFoodFromCollection(
+    public ResponseEntity<Void> deleteFoodFromCollection(
             @PathVariable Integer id,
             @RequestBody DeleteFoodFromCollectionRequest request
     ) {
-        return ResponseEntity.ok(collectionService.deleteFoodFromCollection(id, request));
+        collectionService.deleteFoodFromCollection(id, request);
+        return ResponseEntity.noContent().build();
     }
 }

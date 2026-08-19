@@ -5,11 +5,14 @@ import nl.furka.angularknowledge.dto.CreateCollectionRequest;
 import nl.furka.angularknowledge.dto.DeleteFoodFromCollectionRequest;
 import nl.furka.angularknowledge.model.Collection;
 import nl.furka.angularknowledge.model.CollectionWithFoods;
+import nl.furka.angularknowledge.model.IngredientWithQuantity;
 import nl.furka.angularknowledge.repository.CollectionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 @Service
 @Transactional
@@ -56,30 +59,29 @@ public class CollectionService {
         );
     }
 
-    public CollectionWithFoods deleteFoodFromCollection(Integer collectionId, DeleteFoodFromCollectionRequest request) {
-        var collectionIngredientsResponse = collectionRepository.deleteFoodFromCollection(collectionId, request);
-        var collection = getCollectionById(collectionId);
-        var collectionIngredients = ingredientService.getIngredientsByCollectionId(collectionId);
-
-        return new CollectionWithFoods(
-                new Collection(
-                        collection.id(),
-                        collection.name()
-                ),
-                collectionIngredients
-        );
+    public void deleteFoodFromCollection(Integer collectionId, DeleteFoodFromCollectionRequest request) {
+        requireNonNull(request.ingredientId());
+        collectionRepository.deleteFoodFromCollection(collectionId, request);
     }
 
     public CollectionWithFoods getCollectionWithFoods(Integer collectionId) {
         var collection = getCollectionById(collectionId);
-        var collectionIngredients = ingredientService.getIngredientsByCollectionId(collectionId);
+        var ingredientsWithQuantities = ingredientService.getIngredientsByCollectionId(collectionId)
+                .stream()
+                .map((ingredient) -> new IngredientWithQuantity(
+                        ingredient.id(),
+                        ingredient.name(),
+                        ingredient.servingSize(),
+                        ingredient.unit(),
+                        ingredient.quantity()
+                )).toList();
 
         return new CollectionWithFoods(
                 new Collection(
                         collection.id(),
                         collection.name()
                 ),
-                collectionIngredients
+                ingredientsWithQuantities
         );
     }
 }

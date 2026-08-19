@@ -86,14 +86,15 @@ public class IngredientService {
         return ingredientRepository.addPropertyToIngredient(request);
     }
 
-    public List<IngredientWithUnit> getIngredientsByCollectionId(Integer collectionId) {
+    public List<IngredientWithQuantity> getIngredientsByCollectionId(Integer collectionId) {
         return ingredientRepository.getIngredientsByCollectionId(collectionId)
                 .stream()
-                .map((ingredientResponse) -> new IngredientWithUnit(
+                .map((ingredientResponse) -> new IngredientWithQuantity(
                         ingredientResponse.id(),
                         ingredientResponse.name(),
                         ingredientResponse.servingSize(),
-                        Unit.fromId(ingredientResponse.unitId())
+                        Unit.fromId(ingredientResponse.unitId()),
+                        ingredientResponse.quantity()
                 )).toList();
     }
 }

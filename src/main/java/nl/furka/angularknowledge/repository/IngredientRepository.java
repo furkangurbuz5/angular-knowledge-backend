@@ -141,16 +141,16 @@ public class IngredientRepository {
                 .single();
     }
 
-    public List<IngredientResponse> getIngredientsByCollectionId(Integer collectionId) {
+    public List<IngredientWithQuantityResponse> getIngredientsByCollectionId(Integer collectionId) {
         String sql = """
-                SELECT i.* FROM ingredients i
+                SELECT i.*, ci.quantity FROM ingredients i
                 JOIN collection_ingredients ci ON i.id = ci.ingredient_id
                 WHERE ci.collection_id = :collectionId
                 """;
 
         return jdbcClient.sql(sql)
                 .param("collectionId", collectionId)
-                .query(ingredientResponseRowMapper())
+                .query(ingredientWithQuantityResponseRowMapper())
                 .list();
     }
 
@@ -160,6 +160,16 @@ public class IngredientRepository {
                 rs.getString("name"),
                 rs.getInt("serving_size"),
                 rs.getInt("unit_id")
+        );
+    }
+
+    private RowMapper<IngredientWithQuantityResponse> ingredientWithQuantityResponseRowMapper() {
+        return (rs, _) -> new IngredientWithQuantityResponse(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getInt("serving_size"),
+                rs.getInt("unit_id"),
+                rs.getInt("quantity")
         );
     }
 
