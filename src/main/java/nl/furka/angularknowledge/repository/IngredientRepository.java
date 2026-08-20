@@ -5,6 +5,7 @@ import nl.furka.angularknowledge.model.filter.IngredientFilter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -113,14 +114,42 @@ public class IngredientRepository {
                 .list();
     }
 
+    @Transactional
     public IngredientResponse deleteIngredientById(Integer id) {
-        String sql = """
+        String sql1 = """
+                DELETE FROM person_ingredients
+                WHERE ingredient_id = :id;
+                """;
+
+        jdbcClient.sql(sql1)
+                .param("id", id)
+                .update();
+
+        String sql2 = """
+                DELETE FROM ingredient_properties
+                WHERE ingredient_id = :id;
+                """;
+
+        jdbcClient.sql(sql2)
+                .param("id", id)
+                .update();
+
+        String sql3 = """
+                DELETE FROM collection_ingredients
+                WHERE ingredient_id = :id;
+                """;
+
+        jdbcClient.sql(sql3)
+                .param("id", id)
+                .update();
+
+        String sql4 = """
                 DELETE
                 FROM ingredients
                 WHERE id = :id
                 RETURNING *
                 """;
-        return jdbcClient.sql(sql)
+        return jdbcClient.sql(sql4)
                 .param("id", id)
                 .query(ingredientResponseRowMapper())
                 .single();

@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,13 +59,25 @@ public class CollectionRepository {
                 .single();
     }
 
+    @Transactional
     public void deleteCollectionById(Integer collectionId) {
-        String sql = """
-                        DELETE FROM collections
-                        WHERE id = :collectionId;
+        String sql1 = """
+                DELETE FROM collection_ingredients
+                WHERE collection_id = :collectionId;
+                """;
+
+        jdbcClient
+                .sql(sql1)
+                .param("collectionId", collectionId)
+                .update();
+
+
+        String sql2 = """
+                DELETE FROM collections
+                WHERE id = :collectionId;
                 """;
         jdbcClient
-                .sql(sql)
+                .sql(sql2)
                 .param("collectionId", collectionId)
                 .update();
     }
