@@ -58,6 +58,17 @@ public class CollectionRepository {
                 .single();
     }
 
+    public void deleteCollectionById(Integer collectionId) {
+        String sql = """
+                        DELETE FROM collections
+                        WHERE id = :collectionId;
+                """;
+        jdbcClient
+                .sql(sql)
+                .param("collectionId", collectionId)
+                .update();
+    }
+
     public CollectionIngredientsResponse addFoodToCollection(Integer collectionId, AddFoodToCollectionRequest request) {
         String sql = """
                 INSERT INTO collection_ingredients (collection_id, ingredient_id, quantity)

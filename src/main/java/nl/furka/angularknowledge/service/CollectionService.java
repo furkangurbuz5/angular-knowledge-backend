@@ -49,6 +49,10 @@ public class CollectionService {
         );
     }
 
+    public void deleteCollectionById(Integer collectionId) {
+        collectionRepository.deleteCollectionById(collectionId);
+    }
+
     public Collection addFoodToCollection(Integer id, AddFoodToCollectionRequest request) {
         var collectionIngredientsResponse = collectionRepository.addFoodToCollection(id, request);
         var collection = getCollectionById(collectionIngredientsResponse.collectionId());

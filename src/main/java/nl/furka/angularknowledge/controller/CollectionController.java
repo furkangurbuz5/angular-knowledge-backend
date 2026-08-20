@@ -7,6 +7,8 @@ import nl.furka.angularknowledge.model.Collection;
 import nl.furka.angularknowledge.model.CollectionIngredients;
 import nl.furka.angularknowledge.model.CollectionWithFoods;
 import nl.furka.angularknowledge.service.CollectionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1")
 public class CollectionController {
+    private static final Logger log = LoggerFactory.getLogger(CollectionController.class);
     private final CollectionService collectionService;
 
     CollectionController(CollectionService collectionService) {
@@ -51,6 +54,12 @@ public class CollectionController {
             @RequestBody AddFoodToCollectionRequest request
     ) {
         return ResponseEntity.ok(collectionService.addFoodToCollection(id, request));
+    }
+
+    @DeleteMapping("collections/{id}")
+    public ResponseEntity<Void> deleteCollection(@PathVariable Integer id) {
+        collectionService.deleteCollectionById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("collections/{id}/foods")
