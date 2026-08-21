@@ -1,6 +1,7 @@
 package nl.furka.angularknowledge.controller;
 
 import nl.furka.angularknowledge.dto.AddFoodToCollectionRequest;
+import nl.furka.angularknowledge.dto.CollectionPropertiesResponse;
 import nl.furka.angularknowledge.dto.CreateCollectionRequest;
 import nl.furka.angularknowledge.dto.DeleteFoodFromCollectionRequest;
 import nl.furka.angularknowledge.model.Collection;
@@ -32,6 +33,11 @@ public class CollectionController {
     @GetMapping("collections/{id}")
     public ResponseEntity<Collection> getCollectionById(@PathVariable Integer id) {
         return ResponseEntity.ok(collectionService.getCollectionById(id));
+    }
+
+    @GetMapping("collections/{id}/properties")
+    public ResponseEntity<List<CollectionPropertiesResponse>> getCollectionPropertiesById(@PathVariable Integer id) {
+        return ResponseEntity.ok(collectionService.getCollectionPropertiesById(id));
     }
 
     @PostMapping("collections")

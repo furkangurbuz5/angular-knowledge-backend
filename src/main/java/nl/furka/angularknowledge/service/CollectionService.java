@@ -1,10 +1,12 @@
 package nl.furka.angularknowledge.service;
 
 import nl.furka.angularknowledge.dto.AddFoodToCollectionRequest;
+import nl.furka.angularknowledge.dto.CollectionPropertiesResponse;
 import nl.furka.angularknowledge.dto.CreateCollectionRequest;
 import nl.furka.angularknowledge.dto.DeleteFoodFromCollectionRequest;
 import nl.furka.angularknowledge.model.Collection;
 import nl.furka.angularknowledge.model.CollectionWithFoods;
+import nl.furka.angularknowledge.model.CollectionWithProperties;
 import nl.furka.angularknowledge.model.IngredientWithQuantity;
 import nl.furka.angularknowledge.repository.CollectionRepository;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,10 @@ public class CollectionService {
         var response = this.collectionRepository.getCollectionById(collectionId);
 
         return new Collection(response.id(), response.name());
+    }
+
+    public List<CollectionPropertiesResponse> getCollectionPropertiesById(Integer collectionId) {
+        return collectionRepository.getCollectionProperties(collectionId);
     }
 
     public Collection addCollection(CreateCollectionRequest request) {
@@ -86,6 +92,15 @@ public class CollectionService {
                         collection.name()
                 ),
                 ingredientsWithQuantities
+        );
+    }
+
+    public CollectionWithProperties getCollectionWithProperties(Integer collectionId) {
+        var collection = getCollectionById(collectionId);
+
+        return new CollectionWithProperties(
+                collection,
+                null
         );
     }
 }

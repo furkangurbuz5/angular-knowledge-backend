@@ -71,7 +71,6 @@ public class CollectionRepository {
                 .param("collectionId", collectionId)
                 .update();
 
-
         String sql2 = """
                 DELETE FROM collections
                 WHERE id = :collectionId;
@@ -114,19 +113,50 @@ public class CollectionRepository {
                 .optional();
     }
 
-    public RowMapper<CollectionResponse> collectionResponseRowMapper() {
+    public List<CollectionPropertiesResponse> getCollectionProperties(Integer collectionId) {
+        String sql = """
+                SELECT
+                    ip.property_id,
+                    ci.quantity as collection_serving_amount,
+                    i.serving_size,
+                    i.unit_id,
+                    ip.value as serving_amount
+                FROM collection_ingredients ci
+                    LEFT JOIN ingredients i ON i.id = ci.ingredient_id
+                    LEFT JOIN ingredient_properties ip ON ci.ingredient_id = ip.ingredient_id
+                WHERE ci.collection_id = :collectionId
+                ORDER BY ip.property_id ASC;
+                """;
+
+        return jdbcClient.sql(sql)
+                .param("collectionId", collectionId)
+                .query(collectionPropertiesResponseRowMapper())
+                .list();
+    }
+
+    private RowMapper<CollectionResponse> collectionResponseRowMapper() {
         return (rs, _) -> new CollectionResponse(
                 rs.getInt("id"),
                 rs.getString("name")
         );
     }
 
-    public RowMapper<CollectionIngredientsResponse> collectionIngredientsResponseRowMapper() {
+    private RowMapper<CollectionIngredientsResponse> collectionIngredientsResponseRowMapper() {
         return (rs, _) -> new CollectionIngredientsResponse(
                 rs.getInt("id"),
                 rs.getInt("collection_id"),
                 rs.getInt("ingredient_id"),
                 rs.getInt("quantity")
+        );
+    }
+
+    private RowMapper<CollectionPropertiesResponse> collectionPropertiesResponseRowMapper() {
+        return (rs, _) -> new CollectionPropertiesResponse(
+                rs.getInt("property_id"),
+                rs.getInt("collection_serving_amount"),
+                rs.getInt("serving_size"),
+                rs.getInt("unit_id"),
+                rs.getInt("serving_amount")
         );
     }
 }
