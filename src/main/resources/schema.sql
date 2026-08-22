@@ -64,3 +64,13 @@ CREATE TABLE IF NOT EXISTS collection_ingredients
     FOREIGN KEY (ingredient_id) REFERENCES ingredients (id),
     UNIQUE(collection_id, ingredient_id)
 );
+
+CREATE TABLE IF NOT EXISTS person_collections
+(
+    id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    person_id     INTEGER NOT NULL,
+    collection_id INTEGER NOT NULL,
+    FOREIGN KEY (person_id) REFERENCES person (id),
+    FOREIGN KEY (collection_id) REFERENCES collections (id),
+    UNIQUE (person_id, collection_id)
+);
