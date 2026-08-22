@@ -4,8 +4,9 @@ import nl.furka.angularknowledge.dto.CollectionPropertiesResponse;
 
 import java.util.List;
 
-public record CollectionWithProperties(
+public record CollectionWithFoodsAndProperties(
         Collection collection,
-        List<CollectionPropertiesResponse> properties
+        List<IngredientWithQuantity> ingredients,
+        List<CollectionProperties> collectionProperties
 ) {
 }

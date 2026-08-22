@@ -1,16 +1,17 @@
 package nl.furka.angularknowledge.controller;
 
 import nl.furka.angularknowledge.dto.AddFoodToCollectionRequest;
-import nl.furka.angularknowledge.dto.CollectionPropertiesResponse;
 import nl.furka.angularknowledge.dto.CreateCollectionRequest;
 import nl.furka.angularknowledge.dto.DeleteFoodFromCollectionRequest;
 import nl.furka.angularknowledge.model.Collection;
-import nl.furka.angularknowledge.model.CollectionIngredients;
 import nl.furka.angularknowledge.model.CollectionWithFoods;
+import nl.furka.angularknowledge.model.CollectionWithFoodsAndProperties;
+import nl.furka.angularknowledge.model.CollectionWithProperties;
 import nl.furka.angularknowledge.service.CollectionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,28 +37,28 @@ public class CollectionController {
     }
 
     @GetMapping("collections/{id}/properties")
-    public ResponseEntity<List<CollectionPropertiesResponse>> getCollectionPropertiesById(@PathVariable Integer id) {
-        return ResponseEntity.ok(collectionService.getCollectionPropertiesById(id));
+    public ResponseEntity<CollectionWithProperties> getCollectionPropertiesById(@PathVariable Integer id) {
+        return ResponseEntity.ok(collectionService.getCollectionWithProperties(id));
     }
 
     @PostMapping("collections")
     public ResponseEntity<Collection> addCollection(
-            @RequestBody CreateCollectionRequest request
+            @RequestBody @Validated CreateCollectionRequest request
     ) {
         return ResponseEntity.ok(collectionService.addCollection(request));
     }
 
     @GetMapping("collections/{id}/foods")
-    public ResponseEntity<CollectionWithFoods> getCollectionWithFoods(
+    public ResponseEntity<CollectionWithFoodsAndProperties> getCollectionWithFoods(
             @PathVariable Integer id
     ) {
-        return ResponseEntity.ok(collectionService.getCollectionWithFoods(id));
+        return ResponseEntity.ok(collectionService.getCollectionWithFoodsAndProperties(id));
     }
 
     @PostMapping("collections/{id}/foods")
     public ResponseEntity<Collection> addFoodToCollection(
             @PathVariable Integer id,
-            @RequestBody AddFoodToCollectionRequest request
+            @RequestBody @Validated AddFoodToCollectionRequest request
     ) {
         return ResponseEntity.ok(collectionService.addFoodToCollection(id, request));
     }
@@ -71,7 +72,7 @@ public class CollectionController {
     @DeleteMapping("collections/{id}/foods")
     public ResponseEntity<Void> deleteFoodFromCollection(
             @PathVariable Integer id,
-            @RequestBody DeleteFoodFromCollectionRequest request
+            @RequestBody @Validated DeleteFoodFromCollectionRequest request
     ) {
         collectionService.deleteFoodFromCollection(id, request);
         return ResponseEntity.noContent().build();

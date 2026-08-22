@@ -117,14 +117,18 @@ public class CollectionRepository {
         String sql = """
                 SELECT
                     ip.property_id,
-                    ci.quantity as collection_serving_amount,
-                    i.serving_size,
-                    i.unit_id,
-                    ip.value as serving_amount
+                    p.name as property_name,
+                    p.unit_id,
+                    SUM(ip.value * ci.quantity) as property_amount
                 FROM collection_ingredients ci
                     LEFT JOIN ingredients i ON i.id = ci.ingredient_id
                     LEFT JOIN ingredient_properties ip ON ci.ingredient_id = ip.ingredient_id
+                    LEFT JOIN properties p on ip.property_id = p.id
                 WHERE ci.collection_id = :collectionId
+                GROUP BY
+                    p.name,
+                    ip.property_id,
+                    p.unit_id
                 ORDER BY ip.property_id ASC;
                 """;
 
@@ -153,10 +157,9 @@ public class CollectionRepository {
     private RowMapper<CollectionPropertiesResponse> collectionPropertiesResponseRowMapper() {
         return (rs, _) -> new CollectionPropertiesResponse(
                 rs.getInt("property_id"),
-                rs.getInt("collection_serving_amount"),
-                rs.getInt("serving_size"),
+                rs.getString("property_name"),
                 rs.getInt("unit_id"),
-                rs.getInt("serving_amount")
+                rs.getInt("property_amount")
         );
     }
 }

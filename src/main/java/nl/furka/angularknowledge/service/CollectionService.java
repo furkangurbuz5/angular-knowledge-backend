@@ -4,10 +4,7 @@ import nl.furka.angularknowledge.dto.AddFoodToCollectionRequest;
 import nl.furka.angularknowledge.dto.CollectionPropertiesResponse;
 import nl.furka.angularknowledge.dto.CreateCollectionRequest;
 import nl.furka.angularknowledge.dto.DeleteFoodFromCollectionRequest;
-import nl.furka.angularknowledge.model.Collection;
-import nl.furka.angularknowledge.model.CollectionWithFoods;
-import nl.furka.angularknowledge.model.CollectionWithProperties;
-import nl.furka.angularknowledge.model.IngredientWithQuantity;
+import nl.furka.angularknowledge.model.*;
 import nl.furka.angularknowledge.repository.CollectionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -97,10 +94,29 @@ public class CollectionService {
 
     public CollectionWithProperties getCollectionWithProperties(Integer collectionId) {
         var collection = getCollectionById(collectionId);
-
+        var properties = collectionRepository.getCollectionProperties(collectionId);
         return new CollectionWithProperties(
                 collection,
-                null
+                properties
+        );
+    }
+
+    public CollectionWithFoodsAndProperties getCollectionWithFoodsAndProperties(Integer collectionId) {
+        var collection = getCollectionById(collectionId);
+        var foods = ingredientService.getIngredientsByCollectionId(collectionId);
+        var properties = collectionRepository.getCollectionProperties(collectionId)
+                .stream()
+                .map((i) -> new CollectionProperties(
+                        i.propertyId(),
+                        i.propertyName(),
+                        Unit.fromId(i.unitId()),
+                        i.propertyAmount()
+                )).toList();
+
+        return new CollectionWithFoodsAndProperties(
+                collection,
+                foods,
+                properties
         );
     }
 }
