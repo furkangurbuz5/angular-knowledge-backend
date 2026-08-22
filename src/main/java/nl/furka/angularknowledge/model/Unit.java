@@ -27,6 +27,9 @@ public enum Unit {
     }
 
     public static Unit fromId(Integer id) {
+        if (id == 0) {
+            return null;
+        }
         for (Unit u : values()) {
             if (Objects.equals(u.id, id)) return u;
         }

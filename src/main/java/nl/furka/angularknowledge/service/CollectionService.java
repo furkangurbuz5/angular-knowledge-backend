@@ -106,6 +106,7 @@ public class CollectionService {
         var foods = ingredientService.getIngredientsByCollectionId(collectionId);
         var properties = collectionRepository.getCollectionProperties(collectionId)
                 .stream()
+                .filter((i) -> i.propertyName() != null)
                 .map((i) -> new CollectionProperties(
                         i.propertyId(),
                         i.propertyName(),
